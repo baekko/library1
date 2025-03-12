@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>정답 입력</title>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            font-family: Courier, sans-serif;
+        }
+        .video-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: -1;
+        }
+        .container {
+            background: rgba(0, 0, 0, 0.4); /* 배경만 반투명 */
+            padding: 10px;
+            border-radius: 10px;
+            text-align: center;
+            position: fixed;
+            bottom: 50px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60%;
+            max-width: 375px;
+            flex-direction: column;
+            align-items: center;
+        }
+        .button-container {
+            position: fixed;
+            bottom: 15px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 10px;
+        }
+        .input-container {
+            display: flex;
+            align-items: center;
+            width: 100%;
+            justify-content: center;
+            gap: 10px; /* 버튼 간격 조정 */
+        }
+        input {
+            padding: 8px;
+            font-size: 14px;
+            width: 60%;
+            border: none;
+            border-radius: 5px;
+            margin-right: 10px;
+            caret-color: orange; /* 커서를 주황색으로 변경 */
+        }
+        button {
+            padding: 4px 6px;
+            font-size: 12px;
+            width: 65px;
+            font-weight: bold;
+            cursor: pointer;
+            color: white;
+            background-color: orange;
+            border: none;
+            border-radius: 5px;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
+        }
+        button:disabled {
+            background-color: rgb(109, 93, 93) !important;
+            cursor: not-allowed;
+            opacity: 0.8;
+        }
+    
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            width: 300px;
+            padding: 15px;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+    
+        .modal-content {
+            text-align: center;
+        }
+        .close {
+            float: right;
+            cursor: pointer;
+            font-size: 20px;
+            font-weight: bold;
+        }
+        @media (max-width: 768px) {
+            .container {
+                width: 80%;
+                padding: 10px;
+            }
+            input {
+                font-size: 12px;
+                width: 60%;
+            }
+            button {
+                font-size: 12px;
+                padding: 4px 6px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <video class="video-background" autoplay muted playsinline id="bg-video">
+        <source src="catmom9.mp4" type="video/mp4">
+    </video>
+    <div class="container">
+        <input type="text" id="answer">
+        <button onclick="checkAnswer()">입력</button>
+    </div>   
+    <div class="button-container">
+        <button id="hint1" onclick="useHint('hint1Count', '도서관 내에 지도를 찾아!')">힌트 1</button>
+        <button id="hint2" onclick="useHint('hint2Count', '지도에서 해미도서관을 찾았으면 제일 먼저 아래방향으로 가야한다는건 알겠지?')" disabled>힌트 2</button>
+        <button id="answerBtn" onclick="useHint('answerCount', '아래쪽, 왼쪽, 위쪽, 오른쪽, 위쪽, 오른쪽, 위쪽')" disabled>정답 보기</button>
+        <button onclick="showScore()">점수 보기</button>
+    </div>
+    <div id="modal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <p id="modalText"></p>
+        </div>
+    </div>
+    
+    <script>
+        let score = localStorage.getItem("score") ? parseInt(localStorage.getItem("score")) : 100;
+        let hint1Used = false;
+        let hint2Used = false;
+        let answerUsed = false;
+
+        function updateScore(points) {
+            score += points;
+            localStorage.setItem("score", score);
+        }
+        if (localStorage.getItem("score") === null) {
+        localStorage.setItem("score", "100");
+        }
+        if (localStorage.getItem("hint1Count") === null) {
+        localStorage.setItem("hint1Count", "0");
+        }
+        if (localStorage.getItem("hint2Count") === null) {
+        localStorage.setItem("hint2Count", "0");
+        }
+        if (localStorage.getItem("answerCount") === null) {
+        localStorage.setItem("answerCount", "0");
+        }
+
+        function useHint(type, message) {
+        let count = Number(localStorage.getItem(type));
+        
+        // ✅ 중복 사용 방지: 이미 사용한 힌트라면 점수 차감 X
+        if (count > 0) {
+            console.log(`⚠️ ${type} 이미 사용됨, 추가 감점 없음.`);
+        } else {
+            count++;
+            localStorage.setItem(type, count); // ✅ `localStorage`에 정상 저장
+
+            let score = Number(localStorage.getItem("score"));
+            score--;
+            localStorage.setItem("score", score); // ✅ `localStorage`에 정상 저장
+
+            console.log(`🔥 ${type}: ${count}번 사용됨`);
+            console.log(`🔥 현재 점수: ${score}`);
+        }
+
+        document.getElementById('modalText').innerText = message;
+        document.getElementById('modal').style.display = "block";
+
+        if (type === 'hint1Count') document.getElementById('hint2').disabled = false;
+        if (type === 'hint2Count') document.getElementById('answerBtn').disabled = false;
+        }
+
+        function showScore() {
+        let score = Number(localStorage.getItem("score"));
+        alert("현재 점수: " + score + "점");
+        }
+        function closeModal() {
+            document.getElementById('modal').style.display = "none";
+        }
+        function checkAnswer() {
+            var answer = document.getElementById('answer').value;
+            var correctAnswer = "MEOW";
+            if (answer === correctAnswer) {
+                window.location.href = "https://baekko.github.io/baekkohouse/catmom10.html";
+            } else {
+                document.getElementById('modalText').innerText = "아니야, 고양이들은 다르게 말했어.";
+                document.getElementById('modal').style.display = "block";
+            }
+        }
+        document.getElementById('bg-video').onended = function() {
+            this.pause(); // 동영상 재생이 끝나면 정지
+        };
+    </script>
+</body>
+</html>
