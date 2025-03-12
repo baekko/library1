@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>이미지 슬라이더</title>
+    <style>
+        body {
+            text-align: center;
+            font-family: Arial, sans-serif;
+            margin: 0;
+        }
+        .video-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: -1;
+        }
+        .slider-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: 50px;
+        }
+        .arrow-button {
+            background-color: #00A6ED;
+            width: 40px;
+            border: none;
+            font-size: 25px;
+            cursor: pointer;
+            padding: 0px;
+            position: fixed;
+            bottom: 200px;
+            left: 10%; 
+        }
+        .image-container img {
+            width: 130px;
+            height: auto;
+            border-radius: 22px;
+            transition: opacity 0.3s ease-in-out;
+            position: fixed;
+            bottom: 150px;
+            left: 50%;
+            transform: translateX(-50%);
+    
+        }
+        .container {
+            background: rgba(0, 0, 0, 0.4); /* 배경만 반투명 */
+            padding: 10px;
+            border-radius: 10px;
+            text-align: center;
+            position: fixed;
+            bottom: 50px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60%;
+            max-width: 375px;
+            flex-direction: column;
+            align-items: center;
+        }
+      
+        .button-container {
+            position: fixed;
+            bottom: 15px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 10px;
+        }
+     
+        .input-container {
+            display: flex;
+            align-items: center;
+            width: 100%;
+            justify-content: center;
+        }
+        input {
+            padding: 8px;
+            font-size: 14px;
+            width: 60%;
+            border: none;
+            border-radius: 5px;
+            margin-right: 10px;
+            caret-color: orange; /* 커서를 주황색으로 변경 */
+        }
+        button {
+            padding: 4px 6px;
+            font-size: 12px;
+            font-weight: bold;
+            width: 65px;
+            cursor: pointer;
+            color: white;
+            background-color: orange;
+            border: none;
+            border-radius: 5px;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.466);
+        }
+        button:disabled {
+            background-color: rgb(109, 93, 93) !important;
+            cursor: not-allowed;
+            opacity: 0.8;
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            width: 300px;
+            padding: 15px;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+        .modal-content {
+            text-align: center;
+        }
+        .close {
+            float: right;
+            cursor: pointer;
+            font-size: 20px;
+            font-weight: bold;
+    }
+        @media (max-width: 768px) {
+            .container {
+                width: 80%;
+                padding: 10px;
+            }
+            input {
+                font-size: 12px;
+                width: 60%;
+            }
+            button {
+                font-size: 12px;
+                padding: 4px 6px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <video class="video-background" autoplay muted playsinline id="bg-video">
+        <source src="catmom22.mp4" type="video/mp4">  <!-- 망고보드 동영상 URL 넣기 -->
+    </video>
+    <div class="slider-container">
+        <div class="image-container">
+            <img id="slider-image" src="star1.png" alt="슬라이드 이미지">
+        </div>
+        <button class="arrow-button" onclick="nextImage()">➡️</button>
+    </div>
+    
+    <div class="container">
+        <input type="text" id="answer">
+        <button onclick="checkAnswer()">입력</button>
+    </div>   
+    <div class="button-container">
+        <button id="hint1" onclick="useHint('hint1Count', '도서관 내에 지도를 찾아!')">힌트 1</button>
+        <button id="hint2" onclick="useHint('hint2Count', '지도에서 해미도서관을 찾았으면 제일 먼저 아래방향으로 가야한다는건 알겠지?')" disabled>힌트 2</button>
+        <button id="answerBtn" onclick="useHint('answerCount', '아래쪽, 왼쪽, 위쪽, 오른쪽, 위쪽, 오른쪽, 위쪽')" disabled>정답 보기</button>
+        <button onclick="showScore()">점수 보기</button>
+    </div>
+    <div id="modal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <p id="modalText"></p>
+        </div>
+    </div>
+    
+    <script>
+        const images = ["star1.png", "star2.png", "star3.png", "star4.png"];
+        let currentIndex = 0;
+
+        function nextImage() {
+            currentIndex = (currentIndex + 1) % images.length; // 마지막 이미지 이후 첫 번째로 순환
+            document.getElementById("slider-image").src = images[currentIndex];
+        }
+        let score = localStorage.getItem("score") ? parseInt(localStorage.getItem("score")) : 100;
+        let hint1Used = false;
+        let hint2Used = false;
+        let answerUsed = false;
+
+        function updateScore(points) {
+            score += points;
+            localStorage.setItem("score", score);
+        }
+        if (localStorage.getItem("score") === null) {
+        localStorage.setItem("score", "100");
+        }
+        if (localStorage.getItem("hint1Count") === null) {
+        localStorage.setItem("hint1Count", "0");
+        }
+        if (localStorage.getItem("hint2Count") === null) {
+        localStorage.setItem("hint2Count", "0");
+        }
+        if (localStorage.getItem("answerCount") === null) {
+        localStorage.setItem("answerCount", "0");
+        }
+
+        function useHint(type, message) {
+        let count = Number(localStorage.getItem(type));
+        
+        // ✅ 중복 사용 방지: 이미 사용한 힌트라면 점수 차감 X
+        if (count > 0) {
+            console.log(`⚠️ ${type} 이미 사용됨, 추가 감점 없음.`);
+        } else {
+            count++;
+            localStorage.setItem(type, count); // ✅ `localStorage`에 정상 저장
+
+            let score = Number(localStorage.getItem("score"));
+            score--;
+            localStorage.setItem("score", score); // ✅ `localStorage`에 정상 저장
+
+            console.log(`🔥 ${type}: ${count}번 사용됨`);
+            console.log(`🔥 현재 점수: ${score}`);
+        }
+
+        document.getElementById('modalText').innerText = message;
+        document.getElementById('modal').style.display = "block";
+
+        if (type === 'hint1Count') document.getElementById('hint2').disabled = false;
+        if (type === 'hint2Count') document.getElementById('answerBtn').disabled = false;
+        }
+
+        function showScore() {
+        let score = Number(localStorage.getItem("score"));
+        alert("현재 점수: " + score + "점");
+        }
+        function closeModal() {
+            document.getElementById('modal').style.display = "none";
+        }
+        function checkAnswer() {
+            var answer = document.getElementById('answer').value;
+            var correctAnswer = "SHED";
+            if (answer === correctAnswer) {
+                window.location.href = "https://baekko.github.io/baekkohouse/catmom23.html";
+            } else {
+                document.getElementById('modalText').innerText = "그 말을 하고 싶었던건 아닐거야";
+                document.getElementById('modal').style.display = "block";
+            }
+        }
+    </script>
+</body>
+</html>
