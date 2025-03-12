@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>음식 순서 맞추기</title>
+    <style>
+        body {
+            text-align: center;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            height: 100vh;
+        }
+        .video-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: -1;
+        }
+        .food-container {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            position: fixed;
+            bottom: 70px;
+            left: 50%;
+            transform: translateX(-50%);
+            flex-wrap: nowrap; /* 버튼 한 줄로 배치 */
+        }
+        .food-button, .confirm-button {
+            width: 35px;
+            height: 35px;
+            background-size: cover;
+            background-position: center;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: transform 0.2s ease-in-out;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
+        }
+        .food-button:hover {
+            transform: scale(1.1);
+        }
+        .confirm-button {
+            padding: 6px 4px;
+            font-size: 12px;
+            font-weight: bold;
+            cursor: pointer;
+            color: white;
+            background-color: orange;
+            border: none;
+            border-radius: 5px;
+            
+        }
+        .button-container {
+            position: fixed;
+            bottom: 15px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 10px;
+        }
+        .hint-button {
+            padding: 4px 6px;
+            width: 65px;
+            font-size: 12px;
+            font-weight: bold;
+            cursor: pointer;
+            color: white;
+            background-color: orange;
+            border: none;
+            border-radius: 5px;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.466);
+        }
+        .hint-button:disabled {
+            background-color: rgb(109, 93, 93) !important;
+            cursor: not-allowed;
+            opacity: 0.8;
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            width: 300px;
+            padding: 15px;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    }
+        .modal-content {
+            text-align: center;
+    }       
+        .close {
+            position: absolute;
+            top: 50%;
+            right: 10px;
+            transform: translateY(-50%);
+            font-size: 20px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        @media (max-width: 768px) {
+            .food-button {
+                width: 35px;
+                height: 35px;
+            }
+            .confirm-button {
+                font-size: 12px;
+                padding: 6px 4px;
+            }
+            .hint-button {
+                font-size: 12px;
+                padding: 4px 6px;      
+        }
+    </style>
+</head>
+<body>
+    <video class="video-background" autoplay muted playsinline id="bg-video">
+        <source src="catmom29.mp4" type="video/mp4">
+    </video> 
+    <div class="food-container">
+        <button class="food-button" style="background-image: url('salmon.png');" onclick="recordSelection('연어')"></button>
+        <button class="food-button" style="background-image: url('tuna.png');" onclick="recordSelection('참치')"></button>
+        <button class="food-button" style="background-image: url('shrimp.png');" onclick="recordSelection('새우')"></button>
+        <button class="food-button" style="background-image: url('clam.png');" onclick="recordSelection('조개')"></button>
+        <button class="food-button" style="background-image: url('cod.png');" onclick="recordSelection('고등어')"></button>
+        <button class="food-button" style="background-image: url('chicken.png');" onclick="recordSelection('닭고기')"></button>
+        <button class="confirm-button" onclick="checkSequence()">입력</button>
+    </div>          
+    <div class="button-container">
+        <button id="hint1" class="hint-button" onclick="useHint('hint1Count', '통합데스크에 가면 실마리가 풀릴거야')">힌트 1</button>
+        <button id="hint2" class="hint-button" onclick="useHint('hint2Count', '실로폰 음계마다 색이달라')" disabled>힌트 2</button>
+        <button id="answerBtn" class="hint-button" onclick="useHint('answerCount', '나비야')" disabled>정답 보기</button>
+        <button class="hint-button" onclick="showScore()">점수 보기</button>
+    </div>
+    <div id="modal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <p id="modalText"></p>
+        </div>
+    </div>
+
+    <script>
+        const correctSequence = ['연어', '닭고기', '고등어', '참치', '조개', '새우'];
+        let userInput = [];
+
+        function recordSelection(food) {
+            if (userInput.length < 6) {
+                userInput.push(food);
+            }
+        }
+        function checkSequence() {
+          console.log("사용자 입력:", userInput);
+          console.log("정답:", correctSequence);
+
+         // 배열을 하나씩 비교하는 방식으로 수정
+        let isCorrect = userInput.length === correctSequence.length &&
+                    userInput.every((val, index) => val === correctSequence[index]);
+
+        if (isCorrect) {
+          console.log("정답입니다! 다음 페이지로 이동");
+          window.location.href = "https://baekko.github.io/baekkohouse/catmom30.html";
+        } else {
+          console.log("오답! 모달 표시");
+          document.getElementById('modalText').innerText = "간식 수칙에 어긋나";
+          document.getElementById('modal').style.display = "block";
+          userInput = []; // 오답 시 입력값 초기화
+        }
+    }
+        let score = localStorage.getItem("score") ? parseInt(localStorage.getItem("score")) : 100;
+        let hint1Used = false;
+        let hint2Used = false;
+        let answerUsed = false;
+
+        function updateScore(points) {
+            score += points;
+            localStorage.setItem("score", score);
+        }
+        if (localStorage.getItem("score") === null) {
+        localStorage.setItem("score", "100");
+        }
+        if (localStorage.getItem("hint1Count") === null) {
+        localStorage.setItem("hint1Count", "0");
+        }
+        if (localStorage.getItem("hint2Count") === null) {
+        localStorage.setItem("hint2Count", "0");
+        }
+        if (localStorage.getItem("answerCount") === null) {
+        localStorage.setItem("answerCount", "0");
+        }
+
+        function useHint(type, message) {
+        let count = Number(localStorage.getItem(type));
+        
+        // ✅ 중복 사용 방지: 이미 사용한 힌트라면 점수 차감 X
+        if (count > 0) {
+            console.log(`⚠️ ${type} 이미 사용됨, 추가 감점 없음.`);
+        } else {
+            count++;
+            localStorage.setItem(type, count); // ✅ `localStorage`에 정상 저장
+
+            let score = Number(localStorage.getItem("score"));
+            score--;
+            localStorage.setItem("score", score); // ✅ `localStorage`에 정상 저장
+
+            console.log(`🔥 ${type}: ${count}번 사용됨`);
+            console.log(`🔥 현재 점수: ${score}`);
+        }
+
+        document.getElementById('modalText').innerText = message;
+        document.getElementById('modal').style.display = "block";
+
+        if (type === 'hint1Count') document.getElementById('hint2').disabled = false;
+        if (type === 'hint2Count') document.getElementById('answerBtn').disabled = false;
+        }
+
+        function showScore() {
+        let score = Number(localStorage.getItem("score"));
+        alert("현재 점수: " + score + "점");
+        }
+        function checkAnswer() {
+            let selectedCounts = { 'a': 0, 'b': 0, 'c': 0, 'd': 0, 'e': 0 };
+            selectedImages.forEach(img => {
+                if (selectedCounts.hasOwnProperty(img)) {
+                    selectedCounts[img]++;
+                }
+            });
+            
+            let isCorrect = Object.keys(correctCounts).every(key => selectedCounts[key] === correctCounts[key]);
+            
+            if (isCorrect) {
+                window.location.href = "https://baekko.github.io/baekkohouse/catmom33.html";
+            } else {
+                document.getElementById("modalText").innerText = "츄르를 다시 조합해!";
+                document.getElementById("modal").style.display = "block";
+            }
+        }
+        function closeModal() {
+            document.getElementById('modal').style.display = "none";
+        }
+        document.getElementById('bg-video').onended = function() {
+            this.pause(); // 동영상 재생이 끝나면 정지
+        };
+    </script>
+</body>
+</html>
+
+      
