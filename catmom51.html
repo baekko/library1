@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>최종 결과</title>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            font-family: Courier, sans-serif;
+        }
+        .video-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: -1;
+        }
+        .score-container {
+            position: absolute;
+            top: 50px; /* 상단에서 100px 아래로 배치 */
+            left: 50%;
+            transform: translateX(-50%); /* 가운데 정렬 */
+            width: 80%; /* 가로 크기 설정 */
+            max-width: 375px; /* 최대 너비 제한 */
+            background-color: rgba(0, 0, 0, 0.5); /* 배경을 반투명하게 */
+            color: white;
+            padding: 5px;
+            border-radius: 10px;
+            text-align: center;
+            opacity: 0; /* 처음엔 숨김 */
+            visibility: hidden; /* 처음엔 안 보이게 설정 */
+            transition: opacity 1s ease-in-out; /* 부드럽게 나타남 효과 */   
+        }
+        .button-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: fixed; /* 버튼을 화면에 고정 */
+            bottom: 20px; /* 화면 하단에 위치 */
+            width: 100%;
+            transform: translate3d(0, 0, 0);
+        }
+        .next-button {
+            padding: 4px 6px;
+            font-size: 12px;
+            font-weight: bold;
+            width: 65px;
+            cursor: pointer;
+            background-color: rgba(0, 0, 0, 0.5); /* 배경만 반투명 */
+            color: white;
+            border: none;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+            opacity: 0;
+            visibility: hidden;
+            animation: showButton 0s ease-in 24s forwards;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
+        }
+        .next-button:hover {
+            background-color: black;
+        }
+        @keyframes showButton {
+            to {
+                opacity: 1;
+                visibility: visible;
+            }
+        }
+        /* 모바일에서 버튼 크기와 위치 조정 */
+        @media (max-width: 768px) {
+            .next-button {
+                font-size: 12px;
+                padding: 4px 6px;
+            }
+            .score-container {
+                padding: 5px;
+        }   
+    </style>
+</head>
+<body>
+    <video class="video-background" autoplay muted playsinline id="bg-video">
+        <source src="catmom51.mp4" type="video/mp4">  <!-- 망고보드 동영상 URL 넣기 -->
+    </video>
+    <div class="button-container">
+        <button class="next-button" onclick="goToNextPage()">다음</button>
+    </div>
+    <div class="score-container" id="scoreContainer">
+        <p id="scoreDetails"></p>
+    </div>
+
+    <script>
+        function goToNextPage() {
+            window.location.href = "https://baekko.github.io/baekkohouse/catmom49.html";
+        }
+
+        document.getElementById('bg-video').onended = function() {
+            this.pause();
+        };
+
+        window.onload = function() {
+            console.log("🔥🔥🔥 catmom51 페이지 로드됨 🔥🔥🔥");
+
+            const name = localStorage.getItem('playerName') || '플레이어';
+            let hint1Count = Number(localStorage.getItem('hint1Count')) || 0;
+            let hint2Count = Number(localStorage.getItem('hint2Count')) || 0;
+            let answerCount = Number(localStorage.getItem('answerCount')) || 0;
+            let totalPenalty = hint1Count + hint2Count + answerCount;
+
+            // ✅ 기존 점수 불러오기
+            let finalScore = Number(localStorage.getItem("score"));
+            if (isNaN(finalScore)) {
+                finalScore = 100; // 기본값 100점
+            }
+
+            console.log("🔥 불러온 score 값:", finalScore);
+            console.log("🔥 총 감점 횟수:", totalPenalty);
+
+            // ✅ 최종 점수 계산
+            finalScore = 100 - totalPenalty;
+            if (finalScore < 0) finalScore = 0; // ✅ 최소 점수 0 보장
+            localStorage.setItem('finalScore', finalScore);
+
+            let grade = 'C';
+            if (finalScore >= 95) grade = 'S';
+            else if (finalScore >= 90) grade = 'A';
+            else if (finalScore >= 80) grade = 'B';
+
+            console.log("🔥 최종 점수 계산 완료:", finalScore);
+
+            const text = `${name}님은 게임을 진행하는 동안<br>
+            힌트1: <span style="color: orange;">${hint1Count}번</span> 사용<br>
+            힌트2: <span style="color: orange;">${hint2Count}번</span> 사용<br>
+            정답보기: <span style="color: orange;">${answerCount}번</span> 사용<br><br>
+            힌트 및 정답보기를 총 <span style="color: orange;">${totalPenalty}회</span> 사용하여<br>
+            최종 점수는 <span style="color: orange;">${finalScore}점</span>, 등급은 <span style="color: orange;">${grade}</span>입니다!`;
+
+            document.getElementById('scoreDetails').innerHTML = text;
+
+            setTimeout(() => {
+                document.getElementById('scoreContainer').style.opacity = "1";
+                document.getElementById('scoreContainer').style.visibility = "visible";
+            }, 2000);
+        };    
+    </script>
+
+</body>
+</html>
