@@ -168,7 +168,7 @@
 
         if (isCorrect) {
           console.log("정답입니다! 다음 페이지로 이동");
-          window.location.href = "https://baekko.github.io/baekkohouse/catmom30.html";
+          window.location.href = "https://baekko.github.io/library1/catmom30.html";
         } else {
           console.log("오답! 모달 표시");
           document.getElementById('modalText').innerText = "간식 수칙에 어긋나";
@@ -226,23 +226,6 @@
         function showScore() {
         let score = Number(localStorage.getItem("score"));
         alert("현재 점수: " + score + "점");
-        }
-        function checkAnswer() {
-            let selectedCounts = { 'a': 0, 'b': 0, 'c': 0, 'd': 0, 'e': 0 };
-            selectedImages.forEach(img => {
-                if (selectedCounts.hasOwnProperty(img)) {
-                    selectedCounts[img]++;
-                }
-            });
-            
-            let isCorrect = Object.keys(correctCounts).every(key => selectedCounts[key] === correctCounts[key]);
-            
-            if (isCorrect) {
-                window.location.href = "https://baekko.github.io/library1/catmom30.html";
-            } else {
-                document.getElementById("modalText").innerText = "츄르를 다시 조합해!";
-                document.getElementById("modal").style.display = "block";
-            }
         }
         function closeModal() {
             document.getElementById('modal').style.display = "none";
