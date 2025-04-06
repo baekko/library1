@@ -47,7 +47,6 @@
       margin-top: 20px;
     }
 
-    /* 전화 화면 */
     .call-info {
       position: absolute;
       top: 20%;
@@ -86,6 +85,11 @@
       display: flex;
       align-items: center;
       justify-content: center;
+      transition: transform 0.2s ease;
+    }
+
+    .button.green:hover {
+      transform: scale(1.1);
     }
 
     .button svg {
@@ -115,8 +119,6 @@
   </style>
 </head>
 <body>
-
-  <!-- 오프닝 화면 -->
   <div class="screen visible" id="opening-screen">
     <div class="centered">
       <h1>편지왔어요.<br>오늘도 파이팅입니다!</h1>
@@ -124,7 +126,6 @@
     </div>
   </div>
 
-  <!-- 전화 수신 화면 -->
   <div class="screen" id="call-screen">
     <div class="call-info">
       <div class="label">수신전화</div>
@@ -152,13 +153,17 @@
   <audio id="voice" src="haemi-voice.mp3"></audio>
 
   <script>
+    let vibrationInterval;
+
     function showCallScreen() {
       document.getElementById('opening-screen').classList.remove('visible');
       document.getElementById('call-screen').classList.add('visible');
 
-      // 진동 시작 (iOS 포함)
+      // 진동 반복 시작
       if (navigator.vibrate) {
-        navigator.vibrate([500, 300, 500]);
+        vibrationInterval = setInterval(() => {
+          navigator.vibrate([500, 300]);
+        }, 2000);
       }
     }
 
@@ -166,13 +171,22 @@
       const audio = document.getElementById('voice');
       audio.play();
       document.querySelector('.label').innerText = '통화 중';
-      navigator.vibrate && navigator.vibrate(0);
+      if (navigator.vibrate) navigator.vibrate(0);
+      clearInterval(vibrationInterval);
+
+      // 음성 끝나고 3초 후 다음 페이지로 이동
+      audio.onended = () => {
+        setTimeout(() => {
+          window.location.href = 'next.html'; // 다음 페이지 경로 수정 가능
+        }, 3000);
+      };
     }
 
     function ignoreCall() {
-      // 무반응
+      if (navigator.vibrate) navigator.vibrate(0);
+      clearInterval(vibrationInterval);
     }
   </script>
-
 </body>
 </html>
+
