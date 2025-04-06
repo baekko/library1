@@ -162,7 +162,7 @@
       // 진동 반복 시작
       if (navigator.vibrate) {
         vibrationInterval = setInterval(() => {
-          navigator.vibrate([500, 300]);
+          navigator.vibrate([800, 300]);
         }, 2000);
       }
     }
@@ -177,7 +177,7 @@
       // 음성 끝나고 3초 후 다음 페이지로 이동
       audio.onended = () => {
         setTimeout(() => {
-          window.location.href = 'next.html'; // 다음 페이지 경로 수정 가능
+          window.location.href = 'https://hmlib.cne.go.kr'; // 다음 페이지 경로 수정 가능
         }, 3000);
       };
     }
