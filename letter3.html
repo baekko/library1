@@ -37,7 +37,7 @@
       padding: 0;
       height: 100%;
       font-family: 'Segoe UI', sans-serif;
-      background: black;
+      background: linear-gradient(to bottom, #3ec6e0 0%, #7cd3f3 100%);
       color: white;
       overflow: hidden;
     }
@@ -57,21 +57,6 @@
       height: 100%;
       object-fit: cover;
       z-index: -1;
-    }
-
-    #opening-button {
-      position: absolute;
-      bottom: 10vh;
-      left: 50%;
-      transform: translateX(-50%);
-      padding: 1rem 2rem;
-      font-size: 1.2rem;
-      background-color: rgba(255, 255, 255, 0.8);
-      color: black;
-      border: none;
-      border-radius: 10px;
-      cursor: pointer;
-      z-index: 11;
     }
 
     #call-screen {
@@ -133,7 +118,9 @@
       transform: rotate(-90deg);
       fill: green;
     }
-
+    .button.green:hover {
+      transform: scale(1.1);
+    }
     .red {
       border-color: red;
     }
@@ -179,8 +166,16 @@
       <source src="letter2.mp4" type="video/mp4">
     </video>
     <div class="button-container">
+      <button class="next-button" onclick="showGuideScreen()">다음</button>
+    </div>
+  </div>
+
+  <!-- 안내 화면 -->
+  <div id="guide-screen" style="display: none; width: 100%; height: 100%; background: url('letter2.jpg') center center / cover no-repeat; position: absolute; z-index: 9;">
+    <div class="button-container">
       <button class="next-button" onclick="showCallScreen()">다음</button>
     </div>
+  </div>
   </div>
 
   <!-- 전화 수신 화면 -->
@@ -214,10 +209,13 @@
     let vibrationInterval;
 
     function showCallScreen() {
-      document.getElementById('opening-screen').style.display = 'none';
-      document.getElementById('call-screen').style.display = 'block';
-      startVibration();
-    }
+  document.getElementById('guide-screen').style.display = 'none';
+  document.getElementById('call-screen').style.display = 'block';
+  navigator.vibrate && navigator.vibrate([1200, 400]);
+  vibrationInterval = setInterval(() => {
+    navigator.vibrate([1200, 400]);
+  }, 2000);
+}
 
     function startVibration() {
       if (navigator.vibrate) {
@@ -238,7 +236,11 @@
     function ignoreCall() {
       // 무반응
     }
-  </script>
+  function showGuideScreen() {
+  document.getElementById('opening-screen').style.display = 'none';
+  document.getElementById('guide-screen').style.display = 'block';
+}
+</script>
   <div id="end-button-wrapper" class="end-button-container" style="display: none;">
     <button class="end-button" onclick="goToNextPage()">다음</button>
   </div>
