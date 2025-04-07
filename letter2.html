@@ -86,7 +86,7 @@
     }
   </style>
 </head>
-<body>
+<body onload="startVibration()">
   <div class="call-info">
     <div class="label">수신전화</div>
     <div class="caller">해미도서관</div>
@@ -114,11 +114,12 @@
   <script>
     let vibrationInterval;
 
-    // 진동 반복 시작 (iOS는 지원 안 되지만 Android 대비 유지)
-    if (navigator.vibrate) {
-      vibrationInterval = setInterval(() => {
-        navigator.vibrate([1200, 500]);
-      }, 1500);
+    function startVibration() {
+      if (navigator.vibrate) {
+        vibrationInterval = setInterval(() => {
+          navigator.vibrate([1200, 400]);
+        }, 1500);
+      }
     }
 
     function answerCall() {
@@ -142,6 +143,7 @@
   </script>
 </body>
 </html>
+
 
 
 
