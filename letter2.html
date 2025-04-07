@@ -122,7 +122,7 @@
   <div class="screen visible" id="opening-screen">
     <div class="centered">
       <h1>편지왔어요.<br>오늘도 파이팅입니다!</h1>
-      <button onclick="showCallScreen()">다음</button>
+      <button onclick="enableVibrationThenShowCall()">다음</button>
     </div>
   </div>
 
@@ -155,15 +155,21 @@
   <script>
     let vibrationInterval;
 
+    function enableVibrationThenShowCall() {
+      // Safari를 위한 사용자 제스처 기반 터치 유도
+      document.body.addEventListener('touchstart', () => {}, { once: true });
+      showCallScreen();
+    }
+
     function showCallScreen() {
       document.getElementById('opening-screen').classList.remove('visible');
       document.getElementById('call-screen').classList.add('visible');
 
-      // 진동 반복 시작
+      // 반복 진동 시작 (터치 기반 이후에 호출되어야 iOS에서 동작)
       if (navigator.vibrate) {
         vibrationInterval = setInterval(() => {
-          navigator.vibrate([800, 300]);
-        }, 2000);
+          navigator.vibrate([600, 300]);
+        }, 1500);
       }
     }
 
@@ -171,20 +177,22 @@
       const audio = document.getElementById('voice');
       audio.play();
       document.querySelector('.label').innerText = '통화 중';
+
       if (navigator.vibrate) navigator.vibrate(0);
       clearInterval(vibrationInterval);
 
-      // 음성 끝나고 3초 후 다음 페이지로 이동
       audio.onended = () => {
         setTimeout(() => {
-          window.location.href = 'https://hmlib.cne.go.kr'; // 다음 페이지 경로 수정 가능
+          window.location.href = 'next.html';
         }, 3000);
       };
     }
 
     function ignoreCall() {
+      // 작동 없음
     }
   </script>
 </body>
 </html>
+
 
