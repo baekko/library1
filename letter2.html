@@ -86,7 +86,7 @@
     }
   </style>
 </head>
-<body onload="startVibration()">
+<body ontouchstart="startVibration()">
   <div class="call-info">
     <div class="label">수신전화</div>
     <div class="caller">해미도서관</div>
@@ -113,8 +113,12 @@
 
   <script>
     let vibrationInterval;
+    let vibrationStarted = false;
 
     function startVibration() {
+      if (vibrationStarted) return;
+      vibrationStarted = true;
+
       if (navigator.vibrate) {
         vibrationInterval = setInterval(() => {
           navigator.vibrate([1200, 400]);
@@ -143,6 +147,7 @@
   </script>
 </body>
 </html>
+
 
 
 
