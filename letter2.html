@@ -5,12 +5,39 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>해미도서관 방탈출</title>
   <style>
+    .button-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      position: fixed;
+      bottom: 20px;
+      width: 100%;
+      transform: translate3d(0, 0, 0);
+    }
+
+    .next-button {
+      padding: 4px 6px;
+      font-size: 12px;
+      font-weight: bold;
+      width: 65px;
+      cursor: pointer;
+      background-color: rgba(0, 0, 0, 0.5);
+      color: white;
+      border: none;
+      border-radius: 5px;
+      transition: background-color 0.3s;
+      box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
+    }
+
+    .next-button:hover {
+      background-color: black;
+    }
     html, body {
       margin: 0;
       padding: 0;
       height: 100%;
       font-family: 'Segoe UI', sans-serif;
-      background: linear-gradient(to bottom, #3ec6e0 0%, #7cd3f3 100%);
+      background: black;
       color: white;
       overflow: hidden;
     }
@@ -97,9 +124,7 @@
       max-width: 40px;
       max-height: 40px;
     }
-    .button.green:hover {
-      transform: scale(1.1);
-    }
+
     .green {
       border-color: green;
     }
@@ -124,9 +149,11 @@
   <!-- 오프닝 화면 -->
   <div id="opening-screen">
     <video id="opening-video" autoplay muted>
-      <source src="letter2.mp4" type="video/mp4">
+      <source src="background.mp4" type="video/mp4">
     </video>
-    <button id="opening-button" onclick="showCallScreen()">다음</button>
+    <div class="button-container">
+      <button class="next-button" onclick="showCallScreen()">다음</button>
+    </div>
   </div>
 
   <!-- 전화 수신 화면 -->
@@ -187,6 +214,7 @@
   </script>
 </body>
 </html>
+
 
 
 
