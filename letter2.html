@@ -86,7 +86,7 @@
     }
   </style>
 </head>
-<body ontouchstart="startVibration()">
+<body >
   <div class="call-info">
     <div class="label">수신전화</div>
     <div class="caller">해미도서관</div>
@@ -102,7 +102,7 @@
       </svg>
     </div>
 
-    <div class="button green" onclick="answerCall()">
+    <div class="button green" onclick="startVibration(); answerCall()">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
         <path fill="green" d="M21 16.5l-4.3-1a1 1 0 00-1 .3l-2.2 2.2a16 16 0 01-7.3-7.3l2.2-2.2a1 1 0 00.3-1l-1-4.3A1 1 0 007 3H3.5A1.5 1.5 0 002 4.5 17.5 17.5 0 0019.5 22a1.5 1.5 0 001.5-1.5V17a1 1 0 00-.5-.9z"/>
       </svg>
@@ -112,41 +112,38 @@
   <audio id="voice" src="haemi-voice.mp3"></audio>
 
   <script>
-    let vibrationInterval;
-    let vibrationStarted = false;
+  let vibrationInterval;
 
-    function startVibration() {
-      if (vibrationStarted) return;
-      vibrationStarted = true;
-
-      if (navigator.vibrate) {
-        vibrationInterval = setInterval(() => {
-          navigator.vibrate([1200, 400]);
-        }, 2000);
-      }
+  function startVibration() {
+    if (navigator.vibrate) {
+      vibrationInterval = setInterval(() => {
+        navigator.vibrate([1200, 400]);
+      }, 2000);
     }
+  }
 
-    function answerCall() {
-      const audio = document.getElementById('voice');
-      audio.play();
-      document.querySelector('.label').innerText = '통화 중';
+  function answerCall() {
+    const audio = document.getElementById('voice');
+    audio.play();
+    document.querySelector('.label').innerText = '통화 중';
 
-      if (navigator.vibrate) navigator.vibrate(0);
-      clearInterval(vibrationInterval);
+    if (navigator.vibrate) navigator.vibrate(0);
+    clearInterval(vibrationInterval);
 
-      audio.onended = () => {
-        setTimeout(() => {
-          window.location.href = 'next.html';
-        }, 3000);
-      };
-    }
+    audio.onended = () => {
+      setTimeout(() => {
+        window.location.href = 'next.html';
+      }, 3000);
+    };
+  }
 
-    function ignoreCall() {
-      // 작동 없음
-    }
-  </script>
+  function ignoreCall() {
+    // 작동 없음
+  }
+</script>
 </body>
 </html>
+
 
 
 
