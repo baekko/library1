@@ -14,7 +14,6 @@
       width: 100%;
       transform: translate3d(0, 0, 0);
     }
-
     .next-button {
       padding: 4px 6px;
       font-size: 12px;
@@ -28,7 +27,6 @@
       transition: background-color 0.3s;
       box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
     }
-
     .next-button:hover {
       background-color: black;
     }
@@ -41,14 +39,12 @@
       color: white;
       overflow: hidden;
     }
-
     #opening-screen {
       position: absolute;
       width: 100%;
       height: 100%;
       z-index: 10;
     }
-
     #opening-video {
       position: absolute;
       top: 0;
@@ -58,29 +54,24 @@
       object-fit: cover;
       z-index: -1;
     }
-
     #call-screen {
       display: none;
     }
-
     .call-info {
       position: absolute;
       top: 20%;
       width: 100%;
       text-align: center;
     }
-
     .call-info .label {
       font-size: 5vw;
       opacity: 0.9;
     }
-
     .call-info .caller {
       font-size: 8vw;
       font-weight: bold;
       margin-top: 1vh;
     }
-
     .buttons {
       position: absolute;
       bottom: 10vh;
@@ -89,7 +80,6 @@
       justify-content: space-evenly;
       align-items: center;
     }
-
     .button {
       width: 20vw;
       height: 20vw;
@@ -102,18 +92,15 @@
       align-items: center;
       justify-content: center;
     }
-
     .button svg {
       width: 9vw;
       height: 9vw;
       max-width: 40px;
       max-height: 40px;
     }
-
     .green {
       border-color: green;
     }
-
     .green svg {
       transform: rotate(-90deg);
       fill: green;
@@ -124,12 +111,11 @@
     .red {
       border-color: red;
     }
-
     .red svg {
       transform: rotate(135deg);
       fill: red;
     }
-      .end-button-container {
+    .end-button-container {
       display: flex;
       justify-content: center;
       align-items: center;
@@ -138,7 +124,6 @@
       width: 100%;
       transform: translate3d(0, 0, 0);
     }
-
     .end-button {
       padding: 4px 6px;
       font-size: 12px;
@@ -152,112 +137,123 @@
       transition: background-color 0.3s;
       box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
     }
-
     .end-button:hover {
       background-color: black;
     }
-</style>
+  </style>
 </head>
 <body>
 
-  <!-- 오프닝 화면 -->
-  <div id="opening-screen">
-    <video id="opening-video" autoplay muted>
-      <source src="letter2.mp4" type="video/mp4">
-    </video>
-    <div class="button-container">
-      <button class="next-button" onclick="showGuideScreen()">다음</button>
+<!-- 벨소리 오디오 -->
+<audio id="ringtone" src="ringtone.mp3" preload="auto" loop></audio>
+
+<!-- 오프닝 화면 -->
+<div id="opening-screen">
+  <video id="opening-video" autoplay muted>
+    <source src="letter2.mp4" type="video/mp4">
+  </video>
+  <div class="button-container">
+    <button class="next-button" onclick="showGuideScreen()">다음</button>
+  </div>
+</div>
+
+<!-- 안내 화면 -->
+<div id="guide-screen" style="display: none; width: 100%; height: 100%; background: url('letter2.jpg') center center / cover no-repeat; position: absolute; z-index: 9;">
+  <div class="button-container">
+    <button class="next-button" onclick="showCallScreen()">다음</button>
+  </div>
+</div>
+
+<!-- 전화 수신 화면 -->
+<div id="call-screen">
+  <div class="call-info">
+    <div class="label">수신전화</div>
+    <div class="caller">해미도서관</div>
+  </div>
+  <div class="buttons">
+    <div class="button red" onclick="ignoreCall()">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+        <path fill="red" d="M6.62 10.79a15.91 15.91 0 006.59 6.59l2.2-2.2a1 1 0 011.05-.24 
+        11.72 11.72 0 003.69.59 1 1 0 011 1v3.5a1 1 0 01-1 
+        1A17 17 0 013 5a1 1 0 011-1h3.5a1 1 0 011 1 
+        11.72 11.72 0 00.59 3.69 1 1 0 01-.25 1.05l-2.2 2.2z"/>
+      </svg>
+    </div>
+    <div class="button green" onclick="answerCall()">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+        <path fill="green" d="M21 16.5l-4.3-1a1 1 0 00-1 .3l-2.2 2.2a16 16 0 01-7.3-7.3l2.2-2.2a1 1 0 00.3-1l-1-4.3A1 1 0 007 3H3.5A1.5 1.5 0 002 4.5 17.5 17.5 0 0019.5 22a1.5 1.5 0 001.5-1.5V17a1 1 0 00-.5-.9z"/>
+      </svg>
     </div>
   </div>
+</div>
 
-  <!-- 안내 화면 -->
-  <div id="guide-screen" style="display: none; width: 100%; height: 100%; background: url('letter2.jpg') center center / cover no-repeat; position: absolute; z-index: 9;">
-    <div class="button-container">
-      <button class="next-button" onclick="showCallScreen()">다음</button>
-    </div>
-  </div>
-  </div>
+<audio id="voice" src="haemi-voice.mp3"></audio>
 
-  <!-- 전화 수신 화면 -->
-  <div id="call-screen">
-    <div class="call-info">
-      <div class="label">수신전화</div>
-      <div class="caller">해미도서관</div>
-    </div>
+<script>
+  let vibrationInterval;
 
-    <div class="buttons">
-      <div class="button red" onclick="ignoreCall()">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-          <path fill="red" d="M6.62 10.79a15.91 15.91 0 006.59 6.59l2.2-2.2a1 1 0 011.05-.24 
-          11.72 11.72 0 003.69.59 1 1 0 011 1v3.5a1 1 0 01-1 
-          1A17 17 0 013 5a1 1 0 011-1h3.5a1 1 0 011 1 
-          11.72 11.72 0 00.59 3.69 1 1 0 01-.25 1.05l-2.2 2.2z"/>
-        </svg>
-      </div>
-
-      <div class="button green" onclick="answerCall()">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-          <path fill="green" d="M21 16.5l-4.3-1a1 1 0 00-1 .3l-2.2 2.2a16 16 0 01-7.3-7.3l2.2-2.2a1 1 0 00.3-1l-1-4.3A1 1 0 007 3H3.5A1.5 1.5 0 002 4.5 17.5 17.5 0 0019.5 22a1.5 1.5 0 001.5-1.5V17a1 1 0 00-.5-.9z"/>
-        </svg>
-      </div>
-    </div>
-  </div>
-
-  <audio id="voice" src="haemi-voice.mp3"></audio>
-
-  <script>
-    let vibrationInterval;
-
-    function showCallScreen() {
-  document.getElementById('guide-screen').style.display = 'none';
-  document.getElementById('call-screen').style.display = 'block';
-  navigator.vibrate && navigator.vibrate([1200, 400]);
-  vibrationInterval = setInterval(() => {
-    navigator.vibrate([1200, 400]);
-  }, 2000);
-}
-
-    function startVibration() {
-      if (navigator.vibrate) {
-        vibrationInterval = setInterval(() => {
-          navigator.vibrate([1200, 400]);
-        }, 2000);
-      }
+  function playRingtone() {
+    const ringtone = document.getElementById('ringtone');
+    if (ringtone) {
+      ringtone.currentTime = 0;
+      ringtone.play().catch(err => console.warn("수신음 재생 실패:", err));
     }
+  }
 
-    function answerCall() {
-      const audio = document.getElementById('voice');
-      audio.play();
-      document.querySelector('.label').innerText = '통화 중';
-      if (navigator.vibrate) navigator.vibrate(0);
-      clearInterval(vibrationInterval);
+  function stopRingtone() {
+    const ringtone = document.getElementById('ringtone');
+    if (ringtone) {
+      ringtone.pause();
+      ringtone.currentTime = 0;
     }
+  }
 
-    function ignoreCall() {
-      // 무반응
-    }
-  function showGuideScreen() {
-  document.getElementById('opening-screen').style.display = 'none';
-  document.getElementById('guide-screen').style.display = 'block';
-}
-</script>
-  <div id="end-button-wrapper" class="end-button-container" style="display: none;">
-    <button class="end-button" onclick="goToNextPage()">다음</button>
-  </div>
+  function showCallScreen() {
+    playRingtone();
+    document.getElementById('guide-screen').style.display = 'none';
+    document.getElementById('call-screen').style.display = 'block';
+    navigator.vibrate && navigator.vibrate([1200, 400]);
+    vibrationInterval = setInterval(() => {
+      navigator.vibrate([1200, 400]);
+    }, 2000);
+  }
 
-  <script>
-    function goToNextPage() {
-      window.location.href = 'next.html';
-    }
-
+  function answerCall() {
+    stopRingtone();
     const audio = document.getElementById('voice');
-    audio.onended = () => {
-      document.querySelector('.label').innerText = '통화 종료';
-      setTimeout(() => {
-        document.getElementById('end-button-wrapper').style.display = 'flex';
-      }, 2000);
-    };
-  </script>
+    audio.play();
+    document.querySelector('.label').innerText = '통화 중';
+    if (navigator.vibrate) navigator.vibrate(0);
+    clearInterval(vibrationInterval);
+  }
+
+  function ignoreCall() {
+    // 무반응
+  }
+
+  function showGuideScreen() {
+    document.getElementById('opening-screen').style.display = 'none';
+    document.getElementById('guide-screen').style.display = 'block';
+  }
+
+  const audio = document.getElementById('voice');
+  audio.onended = () => {
+    document.querySelector('.label').innerText = '통화 종료';
+    setTimeout(() => {
+      document.getElementById('end-button-wrapper').style.display = 'flex';
+    }, 2000);
+  };
+</script>
+
+<div id="end-button-wrapper" class="end-button-container" style="display: none;">
+  <button class="end-button" onclick="goToNextPage()">다음</button>
+</div>
+
+<script>
+  function goToNextPage() {
+    window.location.href = 'next.html';
+  }
+</script>
+
 </body>
 </html>
-
