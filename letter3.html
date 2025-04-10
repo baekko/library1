@@ -188,6 +188,7 @@
 </div>
 
 <audio id="voice" src="haemi-voice.mp3"></audio>
+<audio id="hangup" src="hangup.mp3"></audio>
 
 <script>
   let vibrationInterval;
@@ -221,10 +222,16 @@
   function answerCall() {
     stopRingtone();
     const audio = document.getElementById('voice');
-    audio.play();
+    const hangup = document.getElementById('hangup');
+    
     document.querySelector('.label').innerText = '통화 중';
     if (navigator.vibrate) navigator.vibrate(0);
     clearInterval(vibrationInterval);
+
+    audio.play();
+    audio.addEventListener('ended', () => {
+      hangup.play();
+   }, { once: true });
   }
 
   function ignoreCall() {
@@ -257,3 +264,4 @@
 
 </body>
 </html>
+
