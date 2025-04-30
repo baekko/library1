@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, maximum-scale=1.0">
+<title>검색 게임</title>
+<style>
+  html, body {
+    height: auto;
+    min-height: 100%;
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
+    overflow-y: auto;
+  }
+  body {
+    background-image: url("exc1.jpg"); 
+    background-size: cover;
+    background-position: center;
+    font-family: Arial, sans-serif;
+    display: block;
+  }
+  .search-container {
+    width: 100%;
+    max-width: 300px;
+    margin: 80px auto 0 auto;
+    padding: 10px 20px 20px 20px;
+    background-color: #00c73c;
+    border-radius: 10px;   
+  }
+  .logo {
+    font-size: 50px;
+    font-weight: bold;
+    color: white;
+    text-align: center;
+    margin: 10px 0;
+  }
+  .search-box {
+    display: flex;
+    align-items: center;
+    background: white;
+    border: 3px solid #009b2d;
+    border-radius: 4px;
+    overflow: hidden;
+    margin: 0 auto;
+  }
+  .search-box input {
+    border: none;
+    padding: 10px;
+    font-size: 16px;
+    width: 100%;
+    outline: none;
+  }
+  .search-box button {
+    background: #009b2d;
+    border: none;
+    padding: 10px 15px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .search-box button img {
+    width: 25px;
+    height: 25px;
+    filter: brightness(0) invert(1);
+  }
+  .container {
+    background-color: rgba(0, 0, 0, 0.4);
+    padding: 10px;
+    border-radius: 10px;
+    text-align: center;
+    position: absolute;
+    bottom: 50px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60%;
+    max-width: 375px;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+  }
+  .container input {
+    padding: 8px;
+    font-size: 14px;
+    width: 60%;
+    border: none;
+    border-radius: 5px;
+    margin-right: 10px;
+    caret-color: orange;
+  }
+  .container button {
+    padding: 8px 10px;
+    font-size: 14px;
+    font-weight: bold;
+    cursor: pointer;
+    color: white;
+    background-color: orange;
+    border: none;
+    border-radius: 5px;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.466);
+  }
+  .modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background: transparent;
+    align-items: center;
+    justify-content: center;
+  }
+  .modal-content {
+    background: white;
+    padding: 15px;
+    border-radius: 10px;
+    text-align: center;
+    position: relative;
+    max-width: 280px;
+    width: 80%;
+    box-shadow: 0 0 8px rgba(0, 0, 0, 0.3);
+  }
+  .modal-content img {
+    max-width: 100%;
+    height: auto;
+  }
+  .close {
+    position: absolute;
+    top: 27px;
+    right: 26px;
+    font-size: 18px;
+    font-weight: bold;
+    cursor: pointer;
+  }
+</style>
+</head>
+<body>
+
+<div class="search-container">
+  <div class="logo">maver</div>
+  <div class="search-box">
+    <input type="text" id="searchInput" placeholder="검색어를 입력하세요...">
+    <button onclick="search()">
+      <img src="https://upload.wikimedia.org/wikipedia/commons/5/55/Magnifying_glass_icon.svg" alt="Search">
+    </button>
+  </div>
+</div>
+
+<div class="container">
+  <input type="text" id="answerInput">
+  <button onclick="checkAnswer()">입력</button>
+</div>
+
+<div id="modal" class="modal">
+  <div class="modal-content">
+    <span class="close" onclick="closeModal()">&times;</span>
+    <div id="modal-body"></div>
+  </div>
+</div>
+
+<script>
+// 인앱 브라우저 감지 (카카오톡)
+if (navigator.userAgent.includes("KAKAOTALK")) {
+  alert("카카오톡 브라우저에서는 일부 화면이 정상 표시되지 않을 수 있습니다. 기본 브라우저에서 여는 것을 권장합니다.");
+}
+
+const searchDatabase = {
+  "판다": "panda.png",
+  "오리": "duck.png",
+  "사슴": "deer.png",
+  "낙타": "camel.png",
+  "기린": "giraffe.png"
+};
+
+function search() {
+  const input = document.getElementById('searchInput').value.trim();
+  const modal = document.getElementById('modal');
+  const modalBody = document.getElementById('modal-body');
+
+  if (searchDatabase[input]) {
+    modalBody.innerHTML = `<img src="${searchDatabase[input]}" alt="${input}">`;
+  } else {
+    modalBody.innerHTML = `<p style='font-size:18px;'>검색결과가 없습니다.</p>`;
+  }
+
+  modal.style.display = 'flex';
+}
+
+function checkAnswer() {
+  const input = document.getElementById('answerInput').value.trim();
+  const modal = document.getElementById('modal');
+  const modalBody = document.getElementById('modal-body');
+
+  if (input === "관식") {
+    modalBody.innerHTML = `<img src="images/answer.png" alt="정답 이미지"><p style="margin-top:10px;"></p>`;
+  } else {
+    modalBody.innerHTML = `<p style='font-size:18px;'>다시 생각해봐!</p>`;
+  }
+  modal.style.display = 'flex';
+}
+
+function closeModal() {
+  document.getElementById('modal').style.display = 'none';
+}
+</script>
+
+</body>
+</html>
+\
+
+
+
