@@ -198,8 +198,19 @@ function checkAnswer() {
   const modalBody = document.getElementById('modal-body');
 
   if (input === "관식") {
-    modalBody.innerHTML = `<img src="cabbage.png" alt="정답 이미지"><p style="margin-top:10px;"></p>`;
-  } else {
+  modalBody.innerHTML = `<img src="cabbage.png" alt="정답 이미지">
+    <p style="margin-top:10px;"></p>
+    <button onclick="closeModal()" style="margin-top:15px;
+      padding:6px 12px;
+      background:#00c73c;
+      color:white;
+      border:none;
+      border-radius:5px;
+      font-weight:bold;
+      cursor:pointer;">
+      창 닫기
+    </button>`;
+}else {
     modalBody.innerHTML = `<p style='font-size:18px;'>다시 생각해봐!</p>`;
   }
   modal.style.display = 'flex';
