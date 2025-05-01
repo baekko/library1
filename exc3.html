@@ -22,7 +22,7 @@
       position: relative;
       width: calc(100vw - 60px);
       max-width: 507px;
-      margin: 60px auto 0 auto; /* 위 100px, 좌우 여백 */
+      margin: 30px auto 0 auto; /* 위 100px, 좌우 여백 */
     }
 
     #write {
@@ -32,7 +32,7 @@
     }
     #write2 {
       position: absolute;
-      top: 380px;
+      top: 420px;
       left: 50%;
       transform: translateX(-50%);
       width: 100%;
@@ -52,7 +52,7 @@
             border-radius: 10px;
             text-align: center;
             position: fixed;
-            bottom: 40px;
+            bottom: 30px;
             left: 50%;
             transform: translateX(-50%);
             width: 60%;
@@ -92,29 +92,29 @@
     #redline1 {
       width: 128px;
       height: 11px;
-      top: 220px;
+      top: 250px;
       left: 140px;
     }
 
     #redline2 {
       width: 49px;
-      height: 180px;
-      top: 220px;
+      height: 170px;
+      top: 250px;
       left: 100px;
     }
 
     #redline3 {
       width: 100px;
       height: 116px;
-      top: 220px;
+      top: 250px;
       left: 167px;
     }
 
     #redline4 {
       width: 147px;
       height: 36px;
-      top: 290px;
-      left: 43px;
+      top: 330px;
+      left: 33px;
     }
     @media (max-width: 768px) {
             .container {
@@ -147,7 +147,42 @@
   <div class="container">
     <input type="text" id="answer">
     <button onclick="checkAnswer()">입력</button>
-</div>  
+</div> 
+<!-- 모달창 -->
+<div id="answerModal" style="
+  display: none;
+  position: fixed;
+  top: 0; left: 0;
+  width: 100vw; height: 100vh;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 9999;
+  justify-content: center;
+  align-items: center;
+">
+  <div style="
+    background: white;
+    padding: 30px 20px;
+    border-radius: 10px;
+    text-align: center;
+    width: 80%;
+    max-width: 320px;
+  ">
+    
+   
+    <img src="scale.png" alt="정답 이미지" style="width: 100%; max-width: 240px; margin-bottom: 20px;" />
+    
+    <button onclick="closeModal()" style="
+      background: orange;
+      color: white;
+      font-weight: bold;
+      border: none;
+      padding: 8px 12px;
+      border-radius: 5px;
+      cursor: pointer;
+    ">창 닫기</button>
+  </div>
+</div>
+
   <script>
     if (navigator.userAgent.includes("KAKAOTALK")) {
   if (confirm("카카오톡 브라우저에서는 화면이 깨질 수 있습니다. 기본 브라우저에서 여시겠어요?")) {
@@ -155,7 +190,18 @@
   }
 }
     const redlines = document.querySelectorAll('.redline');
+    function checkAnswer() {
+    const input = document.getElementById("answer").value.trim();
+    if (input === "저울") {
+      document.getElementById("answerModal").style.display = "flex";
+    } else {
+      alert("다시 생각해 봐");
+    }
+  }
 
+  function closeModal() {
+    document.getElementById("answerModal").style.display = "none";
+  }
     redlines.forEach(el => {
       let isDragging = false;
       let offsetX = 0, offsetY = 0;
