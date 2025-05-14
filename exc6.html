@@ -146,7 +146,7 @@
   }
 }
   function checkAnswer() {
-    const input = document.getElementById("answer").value.trim();
+    const input = document.getElementById("answer").value.trim().toLowerCase();
     if (input === "darkness") {
       document.getElementById("answerModal").style.display = "flex";
     } else {
