@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+  <title>책 선택 페이지</title>
+  <style>
+    body {
+      margin: 0;
+      padding-top: 100px;
+      font-family: sans-serif;
+      text-align: center;
+      background-color: rgb(222, 228, 220);
+    }
+    .image-row {
+      display: flex;
+      justify-content: center;
+      margin: 30px 0;
+    }
+    .image-row:first-of-type {
+      margin-top: 0 /* 최상단 여백 줄이기 */
+    }
+    .image-row img {
+      width: 50px;
+      height: auto;
+      margin: 0 4px;
+      cursor: pointer;
+    }
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 10;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.8);
+      justify-content: center;
+      align-items: center;
+    }
+    .modal-content {
+      position: relative;
+      max-width: 80%;
+    }
+    .modal-content img {
+      width: 100%;
+      height: auto;
+    }
+    .close {
+      position: absolute;
+      top: -10px;
+      right: -10px;
+      background: white;
+      color: black;
+      border: none;
+      border-radius: 50%;
+      width: 30px;
+      height: 30px;
+      font-size: 20px;
+      cursor: pointer;
+    }
+    .box-container {
+      display: flex;
+      justify-content: center;
+      margin-top: 30px;
+      padding: 0;
+      background-color: transparent;
+    }
+    .box {
+      width: 30px;
+      height: 127px;
+      padding: 0;
+      margin: 0;
+    }
+    .box img {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+    .container {
+            background-color: rgba(0, 0, 0, 0.4); /* 배경만 반투명 */
+            padding: 10px;
+            border-radius: 10px;
+            text-align: center;
+            position: fixed;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60%;
+            max-width: 375px;
+            flex-direction: column;
+            align-items: center;
+        }
+        .input-container {
+            display: flex;
+            align-items: center;
+            width: 100%;
+            justify-content: center;
+        }
+        input {
+            padding: 8px;
+            font-size: 14px;
+            width: 60%;
+            border: none;
+            border-radius: 5px;
+            margin-right: 10px;
+            caret-color: orange; /* 커서를 주황색으로 변경 */
+
+        }
+        button {
+            padding: 4px 6px;
+            width: 65px;
+            font-size: 12px;
+            font-weight: bold;
+            cursor: pointer;
+            color: white;
+            background-color: orange;
+            border: none;
+            border-radius: 5px;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.466);
+        }
+        @media (max-width: 768px) {
+            .container {
+                width: 80%;
+                padding: 10px;
+            }
+            input {
+                font-size: 12px;
+                width: 60%;
+            }
+            button {
+                font-size: 12px;
+                padding: 4px 6px;
+            }
+        }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <input type="text" id="answer">
+    <button onclick="checkAnswer()">입력</button>
+</div>  
+  <!-- 상단 이미지 두 줄 -->
+  <div class="image-row">
+    <img src="book700.png" alt="book" onclick="openModal(this.src)" />
+    <img src="book400.png" alt="book" onclick="openModal(this.src)" />
+    <img src="book800.png" alt="book" onclick="openModal(this.src)" />
+    <img src="book100.png" alt="book" onclick="openModal(this.src)" />
+    <img src="book600.png" alt="book" onclick="openModal(this.src)" />
+  </div>
+  <div class="image-row">
+    <img src="book000.png" alt="book" onclick="openModal(this.src)" />
+    <img src="book300.png" alt="book" onclick="openModal(this.src)" />
+    <img src="book900.png" alt="book" onclick="openModal(this.src)" />
+    <img src="book500.png" alt="book" onclick="openModal(this.src)" />
+    
+  </div>
+
+  <!-- 모달창 -->
+  <div id="modal" class="modal" onclick="closeModal()">
+    <div class="modal-content" onclick="event.stopPropagation()">
+      <button class="close" onclick="closeModal()">&times;</button>
+      <img id="modal-img" src="" alt="확대 이미지" />
+    </div>
+  </div>
+
+  <!-- 하단 이미지 박스 -->
+  <div class="box-container">
+    <div class="box" onclick="cycleImage(this)"><img src="classify200.png" alt="box"></div>
+    <div class="box" onclick="cycleImage(this)"><img src="classify200.png" alt="box"></div>
+    <div class="box" onclick="cycleImage(this)"><img src="classify200.png" alt="box"></div>
+    <div class="box" onclick="cycleImage(this)"><img src="classify200.png" alt="box"></div>
+    <div class="box" onclick="cycleImage(this)"><img src="classify200.png" alt="box"></div>
+    <div class="box" onclick="cycleImage(this)"><img src="classify200.png" alt="box"></div>
+    <div class="box" onclick="cycleImage(this)"><img src="classify200.png" alt="box"></div>
+    <div class="box" onclick="cycleImage(this)"><img src="classify200.png" alt="box"></div>
+    <div class="box" onclick="cycleImage(this)"><img src="classify200.png" alt="box"></div>
+  </div>
+  <div id="answerModal" style="
+  display: none;
+  position: fixed;
+  top: 0; left: 0;
+  width: 100vw; height: 100vh;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 9999;
+  justify-content: center;
+  align-items: center;
+">
+  <div style="
+    background: white;
+    padding: 30px 20px;
+    border-radius: 10px;
+    text-align: center;
+    width: 80%;
+    max-width: 320px;
+  ">
+    
+   
+    <img src="dessimess.png" alt="정답 이미지" style="width: 100%; max-width: 240px; margin-bottom: 20px;" />
+    
+    <button onclick="closeAnswerModal()" style="
+      background: orange;
+      color: white;
+      font-weight: bold;
+      border: none;
+      padding: 8px 12px;
+      border-radius: 5px;
+      cursor: pointer;
+    ">창 닫기</button>
+  </div>
+</div>
+  <script>
+    if (navigator.userAgent.includes("KAKAOTALK")) {
+  if (confirm("카카오톡 브라우저에서는 화면이 깨질 수 있습니다. 기본 브라우저에서 여시겠어요?")) {
+    location.href = 'intent://' + location.href.replace(/^https?:\/\//, '') + '#Intent;scheme=https;package=com.android.chrome;end';
+  }
+}
+    const classifyImages = [
+      "classify000.png",
+      "classify100.png",
+      "classify300.png",
+      "classify400.png",
+      "classify500.png",
+      "classify600.png",
+      "classify700.png",
+      "classify800.png",
+      "classify900.png"
+    ];
+    function checkAnswer() {
+    const input = document.getElementById("answer").value.trim().toLowerCase();
+    if (input === "264") {
+      document.getElementById("answerModal").style.display = "flex";
+    } else {
+      alert("다시 생각해 봐");
+    }
+  }
+
+  function closeAnswerModal() {
+    document.getElementById("answerModal").style.display = "none";
+  }
+    function openModal(src) {
+      document.getElementById("modal-img").src = src;
+      document.getElementById("modal").style.display = "flex";
+    }
+
+    function closeModal() {
+      document.getElementById("modal").style.display = "none";
+    }
+
+    function cycleImage(element) {
+      const img = element.querySelector('img');
+      const current = img.src.match(/classify(\d{3})\.png/);
+      if (!current) return;
+      const idx = classifyImages.findIndex(imgName => imgName.includes(current[1]));
+      const nextIdx = (idx + 1) % classifyImages.length;
+      img.src = classifyImages[nextIdx];
+    }
+  </script>
+</body>
+</html>
+
