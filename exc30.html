@@ -183,6 +183,11 @@
   <div id="message"></div>
 
   <script>
+    if (navigator.userAgent.includes("KAKAOTALK")) {
+  if (confirm("카카오톡 브라우저에서는 화면이 깨질 수 있습니다. 기본 브라우저에서 여시겠어요?")) {
+    location.href = 'intent://' + location.href.replace(/^https?:\/\//, '') + '#Intent;scheme=https;package=com.android.chrome;end';
+  }
+}
     const keys = document.querySelectorAll('.key');
     const submit = document.getElementById('submit');
     const modal = document.getElementById('modal');
